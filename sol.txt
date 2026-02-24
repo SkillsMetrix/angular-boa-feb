@@ -18,7 +18,7 @@
         <mat-form-field>
           <input matInput placeholder="Enter City" class="full"/>
         </mat-form-field>
-        <button mat-raised-button color="primary">Register</button>
+        <button mat-raised-button color="primary" class="full">Register</button>
       </form>
     </mat-card-content>
   </mat-card>
@@ -30,6 +30,8 @@
 
 
 
+
+
 .conatiner{
     height: 100vh;
     display: flex;
@@ -38,8 +40,8 @@
     background: lightgray;
 }
 .register-card{
-    width: 400px;
-    padding: 20px;
+    width: 420px;
+    padding: 25px;
 }
 .full{
     width: 100%;
