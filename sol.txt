@@ -6,25 +6,39 @@
     <mat-card-content>
       <form (ngSubmit)="register(data)" #data=ngForm>
         <mat-form-field class="full">
-     <input matInput placeholder="Enter UserName" name="uname" ngModel />
+     <input matInput placeholder="Enter UserName" name="uname" ngModel  required minlength="4" #un=ngModel/>
+     <mat-error *ngIf="un.invalid">
+        <span *ngIf="un.errors?.['required']">username is required</span>
+        <span *ngIf="un.errors?.['minlength']">username must be 4 char long</span>
+     </mat-error>
         </mat-form-field>
         <mat-form-field class="full">
     
-          <input matInput type="password" placeholder="Enter Password" name="pass" ngModel />
+          <input matInput type="password" placeholder="Enter Password" name="pass" ngModel  required minlength="6" #un=ngModel />
+
+        <mat-error *ngIf="un.invalid">
+        <span *ngIf="un.errors?.['required']">Password is required</span>
+        <span *ngIf="un.errors?.['minlength']">Password must be 6 char long</span>
+     </mat-error>
+
         </mat-form-field>
         <mat-form-field>
-           <input matInput type="email" placeholder="Enter Email" class="full" name="email" ngModel />
+           <input matInput type="email" placeholder="Enter Email" class="full" name="email" ngModel required  email #un=ngModel/>
+            <mat-error *ngIf="un.invalid">
+        <span *ngIf="un.errors?.['required']">Email is required</span>
+        <span *ngIf="un.errors?.['email']">Email must be formatted</span>
+     </mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>City</mat-label>
          
-            <mat-select name="city">
-                @for (c of cities; track c) {
-                    <mat-option [value]="c">{{c}}</mat-option>
+            <mat-select name="city" name="city" ngModel>
+                @for (co of cities; track co) {
+                    <mat-option [value]="co">{{co}}</mat-option>
                 }
             </mat-select>
         </mat-form-field>
-        <button mat-raised-button color="primary" class="full">Register</button>
+        <button [disabled]="data.invalid" mat-raised-button color="primary" class="full">Register</button>
       </form>
     </mat-card-content>
   </mat-card>
