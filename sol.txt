@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormService } from '../../shared/form.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-reactive',
@@ -14,9 +14,9 @@ export class ReactiveComponent {
     private fb: FormBuilder,
   ) {
     this.rf = this.fb.group({
-      uname: [''],
+      uname: ['',[Validators.required,Validators.minLength(4)]],
       pass: [''],
-      email: [''],
+      email: ['',this.emailDomainValidator],
       city: [''],
     });
   }
@@ -28,8 +28,26 @@ export class ReactiveComponent {
   register() {
     console.log(this.rf.value);
   }
+
+  emailDomainValidator(control:FormControl){
+    let email=control.value
+    if(email && email.indexOf('@') !=-1){
+      let[before,domain]= email.split('@')
+      if(domain !=='boa.com'){
+        return {
+          ed:{
+            pd: domain
+          }
+        }
+      }
+    }
+    return null
+  }
 }
---------
+
+
+-----------------
+
 
 <div class="conatiner">
   <mat-card class="register-card">
@@ -40,6 +58,11 @@ export class ReactiveComponent {
       <form (ngSubmit)="register()" [formGroup]="rf">
         <mat-form-field class="full">
      <input matInput placeholder="Enter UserName" formControlName="uname" />
+
+     <mat-error *ngIf="f['uname'].errors">
+        <span *ngIf="f['uname'].errors?.['required']">username is required</span>
+         <span *ngIf="f['uname'].errors?.['minlength']">username must be 4 char</span>
+     </mat-error>
      
         </mat-form-field>
         <mat-form-field class="full">
@@ -50,7 +73,11 @@ export class ReactiveComponent {
         </mat-form-field>
         <mat-form-field>
            <input matInput type="email" placeholder="Enter Email" class="full" formControlName="email"/>
-            
+             <mat-error *ngIf="f['email'].errors">
+          <span *ngIf="f['email'].errors?.['ed']">Email must be boa.com</span>
+          
+     </mat-error>
+     
         </mat-form-field>
         <mat-form-field>
             <mat-label>City</mat-label>
