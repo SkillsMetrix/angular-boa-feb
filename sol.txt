@@ -1,65 +1,13 @@
-import { Component } from '@angular/core';
 
-@Component({
-  selector: 'app-footer',
-  templateUrl: './footer.component.html',
-  styleUrl: './footer.component.css',
-})
-export class FooterComponent {
-  myCity = 'pune';
-  myProfile =
-    'https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg';
 
-  addUser() {
-    alert('user activated');
-  }
-
-  getColor(country: string) {
-    switch (country) {
-      case 'India':
-        return 'blue';
-
-      case 'USA':
-        return 'green';
-
-      case 'UK':
-        return 'purple';
-      default:
-        return null;
-    }
-  }
-  people=[
-    {
-      name:'Duglus',country:'UK'
-    },
-     {
-      name:'Sam',country:'USA'
-    },
-     {
-      name:'Smita',country:'India'
-    }
-  ]
+.conatiner{
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: lightgray;
 }
-
-
---------
-
-
-
-<p>Property Binding...</p>
-My City: <input type="text" [value]="myCity"/>
-<br>
-Profile: <img [src]="myProfile" height="100">
-
-<button (click)="addUser()">Activate</button>
-
-
-<p>Style Binding</p>
-
-<ul *ngFor="let person of people">
-    <li [ngStyle]="{'color': getColor(person.country)}">
-
-        {{person.name}} -- {{person.country}}
-
-    </li>
-</ul>
+.register-card{
+    width: 400px;
+    padding: 20px;
+}
