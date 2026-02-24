@@ -1,7 +1,37 @@
+<div class="conatiner">
+  <mat-card class="register-card">
+    <mat-card-header>
+      <mat-card-title>User Registration Form</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form>
+        <mat-form-field appearance="outline" class="full">
+     <input matInput placeholder="Enter UserName" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full">
+    
+          <input matInput type="password" placeholder="Enter Password" />
+        </mat-form-field>
+        <mat-form-field>
+           <input matInput type="email" placeholder="Enter Email" class="full"/>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Enter City" class="full"/>
+        </mat-form-field>
+        <button mat-raised-button color="primary">Register</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+
+--------
+
 
 
 .conatiner{
-    height: 50vh;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,23 +41,7 @@
     width: 400px;
     padding: 20px;
 }
-
-
-
-
-----------
-
-
-
-
-
-<div class="conatiner">
-    <mat-card class="register-card">
-        <mat-card-header>
-            <mat-card-title>User Registration Form</mat-card-title>
-
-        </mat-card-header>
-        <mat-card-content></mat-card-content>
-    </mat-card>
-
-</div>
+.full{
+    width: 100%;
+    margin-bottom: 15px;
+}
