@@ -11,3 +11,23 @@
     width: 400px;
     padding: 20px;
 }
+
+
+
+
+----------
+
+
+
+
+
+<div class="conatiner">
+    <mat-card class="register-card">
+        <mat-card-header>
+            <mat-card-title>User Registration Form</mat-card-title>
+
+        </mat-card-header>
+        <mat-card-content></mat-card-content>
+    </mat-card>
+
+</div>
