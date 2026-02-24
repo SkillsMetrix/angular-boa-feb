@@ -1,28 +1,61 @@
+import { Component } from '@angular/core';
+import { FormService } from '../../shared/form.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
+@Component({
+  selector: 'app-reactive',
+  templateUrl: './reactive.component.html',
+  styleUrl: './reactive.component.css',
+})
+export class ReactiveComponent {
+  rf: FormGroup;
+  constructor(
+    private fs: FormService,
+    private fb: FormBuilder,
+  ) {
+    this.rf = this.fb.group({
+      uname: [''],
+      pass: [''],
+      email: [''],
+      city: [''],
+    });
+  }
+  get f() {
+    return this.rf.controls;
+  }
+
+  cities = ['pune', 'hyd', 'delhi', 'chennai', 'mumbai'];
+  register() {
+    console.log(this.rf.value);
+  }
+}
+--------
+
 <div class="conatiner">
   <mat-card class="register-card">
     <mat-card-header>
       <mat-card-title>User Registration Form</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form (ngSubmit)="register()">
+      <form (ngSubmit)="register()" [formGroup]="rf">
         <mat-form-field class="full">
-     <input matInput placeholder="Enter UserName"  />
+     <input matInput placeholder="Enter UserName" formControlName="uname" />
      
         </mat-form-field>
         <mat-form-field class="full">
     
-          <input matInput type="password" placeholder="Enter Password" />
+          <input matInput type="password" placeholder="Enter Password" formControlName="pass"/>
 
         
         </mat-form-field>
         <mat-form-field>
-           <input matInput type="email" placeholder="Enter Email" class="full"/>
+           <input matInput type="email" placeholder="Enter Email" class="full" formControlName="email"/>
             
         </mat-form-field>
         <mat-form-field>
             <mat-label>City</mat-label>
          
-            <mat-select name="city">
+            <mat-select formControlName="city">
                 @for (co of cities; track co) {
                     <mat-option [value]="co">{{co}}</mat-option>
                 }
