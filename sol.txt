@@ -4,46 +4,28 @@
       <mat-card-title>User Registration Form</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form>
-        <mat-form-field appearance="outline" class="full">
-     <input matInput placeholder="Enter UserName" />
+      <form (ngSubmit)="register(data)" #data=ngForm>
+        <mat-form-field class="full">
+     <input matInput placeholder="Enter UserName" name="uname" ngModel />
         </mat-form-field>
-        <mat-form-field appearance="outline" class="full">
+        <mat-form-field class="full">
     
-          <input matInput type="password" placeholder="Enter Password" />
+          <input matInput type="password" placeholder="Enter Password" name="pass" ngModel />
         </mat-form-field>
         <mat-form-field>
-           <input matInput type="email" placeholder="Enter Email" class="full"/>
+           <input matInput type="email" placeholder="Enter Email" class="full" name="email" ngModel />
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Enter City" class="full"/>
+            <mat-label>City</mat-label>
+         
+            <mat-select name="city">
+                @for (c of cities; track c) {
+                    <mat-option [value]="c">{{c}}</mat-option>
+                }
+            </mat-select>
         </mat-form-field>
         <button mat-raised-button color="primary" class="full">Register</button>
       </form>
     </mat-card-content>
   </mat-card>
 </div>
-
-
-
---------
-
-
-
-
-
-.conatiner{
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: lightgray;
-}
-.register-card{
-    width: 420px;
-    padding: 25px;
-}
-.full{
-    width: 100%;
-    margin-bottom: 15px;
-}
