@@ -1,30 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { FormService } from '../../shared/form.service';
-
-@Component({
-  selector: 'app-userdata',
-  templateUrl: './userdata.component.html',
-  styleUrl: './userdata.component.css',
-})
-export class UserdataComponent implements OnInit {
-  constructor(private us: FormService) {}
-
-  displayedColumns:string[]=['id','uname','email','city']
-  users: any[] = [];
-  ngOnInit(): void {
-    this.loadData();
-  }
-  loadData() {
-    this.us.loadUsers().subscribe((data: any) => {
-      this.users = data;
-    });
-  }
+.table-container{
+    width: 600px;
+    max-height: 300px;
+    overflow: auto;
+    margin: 20px auto;
+    border-radius: 8px;
 }
 
 
---------
 
-<table mat-table [dataSource]="users" class="mat-elevation-z8">
+<div class="table-container mat-elevation-z4">
+<table mat-table [dataSource]="users" >
 
   <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
@@ -57,3 +42,28 @@ export class UserdataComponent implements OnInit {
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
+</div>
+
+----
+import { Component, OnInit } from '@angular/core';
+import { FormService } from '../../shared/form.service';
+
+@Component({
+  selector: 'app-userdata',
+  templateUrl: './userdata.component.html',
+  styleUrl: './userdata.component.css',
+})
+export class UserdataComponent implements OnInit {
+  constructor(private us: FormService) {}
+
+  displayedColumns:string[]=['id','uname','email','city']
+  users: any[] = [];
+  ngOnInit(): void {
+    this.loadData();
+  }
+  loadData() {
+    this.us.loadUsers().subscribe((data: any) => {
+      this.users = data;
+    });
+  }
+}
