@@ -1,76 +1,56 @@
-import { Component } from '@angular/core';
-import { FormService } from '../../shared/form.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { CanActivate } from '@angular/router';
 
-@Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+@Injectable({
+  providedIn: 'root',
 })
-export class LoginComponent {
-  rf: FormGroup;
-  constructor(
-    private fs: FormService,
-    private fb: FormBuilder,
-    private route:Router
-  ) {
-    this.rf = this.fb.group({
-      uname: ['', [Validators.required]],
-      pass: [''],
-    });
-  }
-  get f() {
-    return this.rf.controls;
-  }
+export class GuardService implements CanActivate {
+  isAllowed = false;
+  canActivate() {
+    if (!this.isAllowed) {
+      alert('Unauthorized Access...!');
+    } else {
+      this.isAllowed = true;
+    }
 
-  login() {
-    this.fs.loginValidate(this.rf.value).subscribe((users) =>{
-      if(users.length > 0){
-        localStorage.setItem('user',JSON.stringify(users[0]))
-        this.route.navigateByUrl('/userdetails')
-      }else{
-        alert('Unauthorized Access')
-      }
-    })
+    return this.isAllowed;
   }
 }
----------
-import { Component } from '@angular/core';
- 
+-------
 
-@Component({
-  selector: 'app-navigation',
-  templateUrl: './navigation.component.html',
-  styleUrl: './navigation.component.css',
- 
- 
- 
+
+
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { GuardService } from './guard.service';
+
+@Injectable({
+  providedIn: 'root'
 })
-export class NavigationComponent {
+export class FormService {
 
-  isLoggedIn():boolean{
-    return !!localStorage.getItem('user')
-  }
+  private apiURL='http://localhost:3000/users'
 
-}
----
+  constructor(private http:HttpClient,private gs:GuardService) { }
 
-
-<mat-toolbar color="primary" class="navbar">
-  <div class="nav-left">
-      @if (!isLoggedIn()) {
-    <button mat-button routerLink="/login">Login</button>
-    <button mat-button routerLink="/register">Register</button>
-      }
+  addUserToDB(data:any){
+   this.http.post(this.apiURL,data).subscribe(data =>{
+    console.log("user added");
     
-    <button mat-button routerLink="/userdetails">UserDetails</button>
-    <button mat-button>Portfolio</button>
-  </div>
-
-  <span class="spacer"></span>
-  @if (isLoggedIn()) {
-<button mat-button color="warn"><mat-icon>logout</mat-icon></button>
+   })
+    
   }
-  
-</mat-toolbar>
+  loginValidate(data:any){
+    this.gs.isAllowed=true
+    return this.http.get<any[]>(
+      `${this.apiURL}?uname=${data.uname}&pass=${data.pass}`
+
+    )
+  }
+  loadUsers(){
+    return this.http.get(this.apiURL) 
+  }
+  deleteUser(id:string){
+    return this.http.delete(`${this.apiURL}/${id}`)
+  }
+}
