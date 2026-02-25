@@ -1,27 +1,76 @@
+import { Component } from '@angular/core';
+import { FormService } from '../../shared/form.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
+})
+export class LoginComponent {
+  rf: FormGroup;
+  constructor(
+    private fs: FormService,
+    private fb: FormBuilder,
+    private route:Router
+  ) {
+    this.rf = this.fb.group({
+      uname: ['', [Validators.required]],
+      pass: [''],
+    });
+  }
+  get f() {
+    return this.rf.controls;
+  }
+
+  login() {
+    this.fs.loginValidate(this.rf.value).subscribe((users) =>{
+      if(users.length > 0){
+        localStorage.setItem('user',JSON.stringify(users[0]))
+        this.route.navigateByUrl('/userdetails')
+      }else{
+        alert('Unauthorized Access')
+      }
+    })
+  }
+}
+---------
+import { Component } from '@angular/core';
+ 
+
+@Component({
+  selector: 'app-navigation',
+  templateUrl: './navigation.component.html',
+  styleUrl: './navigation.component.css',
+ 
+ 
+ 
+})
+export class NavigationComponent {
+
+  isLoggedIn():boolean{
+    return !!localStorage.getItem('user')
+  }
+
+}
+---
+
+
 <mat-toolbar color="primary" class="navbar">
   <div class="nav-left">
-    <button mat-button><mat-icon>login</mat-icon></button>
-    <button mat-button><mat-icon>person_add</mat-icon></button>
-    <button mat-button>UserDetails</button>
+      @if (!isLoggedIn()) {
+    <button mat-button routerLink="/login">Login</button>
+    <button mat-button routerLink="/register">Register</button>
+      }
+    
+    <button mat-button routerLink="/userdetails">UserDetails</button>
     <button mat-button>Portfolio</button>
   </div>
 
   <span class="spacer"></span>
-
-  <button mat-button color="warn"><mat-icon>logout</mat-icon></button>
+  @if (isLoggedIn()) {
+<button mat-button color="warn"><mat-icon>logout</mat-icon></button>
+  }
+  
 </mat-toolbar>
-
-
-
-----------
-
-.navbar{
-    display: flex;
-}
-.nav-left{
-    display: flex;
-    gap: 15px;
-}
-.spacer{
-    flex:  1 1 auto;
-}
