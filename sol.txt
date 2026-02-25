@@ -107,3 +107,21 @@ export class UserdataComponent implements OnInit {
 
   }
 }
+
+
+
+
+---------
+
+
+{
+  "users": [
+    {
+      "id": "aa20",
+      "uname": "admin",
+      "pass": "pass123",
+      "email": "admin@boa.com",
+      "city": "delhi"
+    }
+  ]
+}
