@@ -4,43 +4,56 @@ import { FormService } from '../../shared/form.service';
 @Component({
   selector: 'app-userdata',
   templateUrl: './userdata.component.html',
-  styleUrl: './userdata.component.css'
+  styleUrl: './userdata.component.css',
 })
-export class UserdataComponent implements OnInit{
-  constructor(private us:FormService){}
+export class UserdataComponent implements OnInit {
+  constructor(private us: FormService) {}
 
+  displayedColumns:string[]=['id','uname','email','city']
+  users: any[] = [];
   ngOnInit(): void {
-      this.us.loadUsers()
+    this.loadData();
+  }
+  loadData() {
+    this.us.loadUsers().subscribe((data: any) => {
+      this.users = data;
+    });
   }
 }
+
+
 --------
 
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+<table mat-table [dataSource]="users" class="mat-elevation-z8">
 
-@Injectable({
-  providedIn: 'root'
-})
-export class FormService {
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
 
-  private apiURL='http://localhost:3000/users'
+  <!-- Position Column -->
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef> ID. </th>
+    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+  </ng-container>
 
-  constructor(private http:HttpClient) { }
+  <!-- Name Column -->
+  <ng-container matColumnDef="uname">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let element"> {{element.uname}} </td>
+  </ng-container>
 
-  addUserToDB(data:any){
-   this.http.post(this.apiURL,data).subscribe(data =>{
-    console.log("user added");
-    
-   })
-    
-  }
-  loginValidate(data:any){
-     console.log(data);
-  }
-  loadUsers(){
-    this.http.get(this.apiURL).subscribe(data =>{
-      console.log(data);
-      
-    })
-  }
-}
+  <!-- Weight Column -->
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef> Email </th>
+    <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="city">
+    <th mat-header-cell *matHeaderCellDef> City </th>
+    <td mat-cell *matCellDef="let element"> {{element.city}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
