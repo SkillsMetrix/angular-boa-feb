@@ -1,95 +1,46 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormService } from '../../shared/form.service';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-reactive',
-  templateUrl: './reactive.component.html',
-  styleUrl: './reactive.component.css',
+  selector: 'app-userdata',
+  templateUrl: './userdata.component.html',
+  styleUrl: './userdata.component.css'
 })
-export class ReactiveComponent {
-  rf: FormGroup;
-  constructor(
-    private fs: FormService,
-    private fb: FormBuilder,
-  ) {
-    this.rf = this.fb.group({
-      uname: ['',[Validators.required,Validators.minLength(4)]],
-      pass: [''],
-      email: ['',this.emailDomainValidator],
-      city: [''],
-    });
-  }
-  get f() {
-    return this.rf.controls;
-  }
+export class UserdataComponent implements OnInit{
+  constructor(private us:FormService){}
 
-  cities = ['pune', 'hyd', 'delhi', 'chennai', 'mumbai'];
-  register() {
-    console.log(this.rf.value);
-  }
-
-  emailDomainValidator(control:FormControl){
-    let email=control.value
-    if(email && email.indexOf('@') !=-1){
-      let[before,domain]= email.split('@')
-      if(domain !=='boa.com'){
-        return {
-          ed:{
-            pd: domain
-          }
-        }
-      }
-    }
-    return null
+  ngOnInit(): void {
+      this.us.loadUsers()
   }
 }
+--------
 
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
------------------
+@Injectable({
+  providedIn: 'root'
+})
+export class FormService {
 
+  private apiURL='http://localhost:3000/users'
 
-<div class="conatiner">
-  <mat-card class="register-card">
-    <mat-card-header>
-      <mat-card-title>User Registration Form</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <form (ngSubmit)="register()" [formGroup]="rf">
-        <mat-form-field class="full">
-     <input matInput placeholder="Enter UserName" formControlName="uname" />
+  constructor(private http:HttpClient) { }
 
-     <mat-error *ngIf="f['uname'].errors">
-        <span *ngIf="f['uname'].errors?.['required']">username is required</span>
-         <span *ngIf="f['uname'].errors?.['minlength']">username must be 4 char</span>
-     </mat-error>
-     
-        </mat-form-field>
-        <mat-form-field class="full">
+  addUserToDB(data:any){
+   this.http.post(this.apiURL,data).subscribe(data =>{
+    console.log("user added");
     
-          <input matInput type="password" placeholder="Enter Password" formControlName="pass"/>
-
-        
-        </mat-form-field>
-        <mat-form-field>
-           <input matInput type="email" placeholder="Enter Email" class="full" formControlName="email"/>
-             <mat-error *ngIf="f['email'].errors">
-          <span *ngIf="f['email'].errors?.['ed']">Email must be boa.com</span>
-          
-     </mat-error>
-     
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>City</mat-label>
-         
-            <mat-select formControlName="city">
-                @for (co of cities; track co) {
-                    <mat-option [value]="co">{{co}}</mat-option>
-                }
-            </mat-select>
-        </mat-form-field>
-        <button  mat-raised-button color="primary" class="full">Register</button>
-      </form>
-    </mat-card-content>
-  </mat-card>
-</div>
+   })
+    
+  }
+  loginValidate(data:any){
+     console.log(data);
+  }
+  loadUsers(){
+    this.http.get(this.apiURL).subscribe(data =>{
+      console.log(data);
+      
+    })
+  }
+}
