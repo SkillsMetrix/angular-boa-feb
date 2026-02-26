@@ -1,44 +1,44 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
  
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
- 
-  @Component({
-  selector: 'app-login',
-  templateUrl: './login.html',
-  standalone:false,
-  styleUrl: './login.css',
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
 })
-export class LoginComponent {
-  rf: FormGroup;
-  constructor(
- 
-    private fb: FormBuilder,
- 
- 
-  ) {
-    this.rf = this.fb.group({
-      uname: ['', [Validators.required]],
-      pass: [''],
-    });
-  }
-  get f() {
-    return this.rf.controls;
+export class Login {
+  API_URL = 'http://localhost:3000/api/login';
+
+  private loogedIn = new BehaviorSubject<boolean>(false);
+
+  constructor(private http: HttpClient) {
+    this.checkToken();
   }
 
-  login() {
-   
+  loginUser(userdata: any) {
+    console.log(userdata);
+
+    return this.http.post(this.API_URL, userdata).pipe(
+      tap((res: any) => {
+        if (res.token) {
+          console.log(res.token);
+          localStorage.setItem('token', res.token);
+          this.loogedIn.next(true);
+        }
+      }),
+    );
+  }
+  getToken() {
+    return localStorage.getItem('token');
+  }
+  isLoggedIn(): Observable<boolean> {
+    return this.loogedIn.asObservable();
+  }
+  private checkToken() {
+    const token = this.getToken();
+    this.loogedIn.next(!!token);
+  }
+  getProtectedData(): Observable<any> {
+    return this.http.get('http://localhost:3000/api/protected');
   }
 }
------------------
-
-<div class="conatiner">
-  <form (ngSubmit)="login()" [formGroup]="rf">
-    <input formControlName="uname" />
-
-    <span *ngIf="f['uname'].errors?.['required']">username is required</span>
-
-    <input type="password" placeholder="Enter Password" formControlName="pass" />
-
-    <button class="full">Login</button>
-  </form>
-</div>
