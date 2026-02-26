@@ -1,44 +1,27 @@
-import { HttpClient } from '@angular/common/http';
- 
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { CanActivate, Router } from '@angular/router';
+import { Login } from './login';
+import { map, take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class Login {
-  API_URL = 'http://localhost:3000/api/login';
+export class AuthGuard implements CanActivate {
+  constructor(
+    private ls: Login,
+    private route: Router,
+  ) {}
 
-  private loogedIn = new BehaviorSubject<boolean>(false);
-
-  constructor(private http: HttpClient) {
-    this.checkToken();
-  }
-
-  loginUser(userdata: any) {
-    console.log(userdata);
-
-    return this.http.post(this.API_URL, userdata).pipe(
-      tap((res: any) => {
-        if (res.token) {
-          console.log(res.token);
-          localStorage.setItem('token', res.token);
-          this.loogedIn.next(true);
+  canActivate() {
+    return this.ls.isLoggedIn().pipe(
+      take(1),
+      map((isLoggedIn) => {
+        if (!isLoggedIn) {
+          this.route.navigate(['/login']);
+          return false;
         }
+        return true;
       }),
     );
-  }
-  getToken() {
-    return localStorage.getItem('token');
-  }
-  isLoggedIn(): Observable<boolean> {
-    return this.loogedIn.asObservable();
-  }
-  private checkToken() {
-    const token = this.getToken();
-    this.loogedIn.next(!!token);
-  }
-  getProtectedData(): Observable<any> {
-    return this.http.get('http://localhost:3000/api/protected');
   }
 }
