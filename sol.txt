@@ -1,20 +1,12 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Login } from './login';
-import { Observable } from 'rxjs';
+import { Pipe, PipeTransform } from '@angular/core';
 
-@Injectable()
-export class JwtInterceptor implements HttpInterceptor {
-  constructor(private loginService: Login) {}
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = this.loginService.getToken();
-    if (token) {
-      req = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    }
-    return next.handle(req);
+@Pipe({
+  name: 'reverse',
+})
+export class ReversePipe implements PipeTransform {
+
+  transform(value: string) {
+    return value.split('').reverse().join('');
   }
+
 }
