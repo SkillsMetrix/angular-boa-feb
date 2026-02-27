@@ -1,39 +1,24 @@
-import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { DataService } from 'src/app/Service/data.service';
-import {
-  addMovies,
-  addMovieSuccess,
-  getMovies,
-  getMoviesSuccess,
-} from '../Actions/movie.action';
-import { concatMap, exhaustMap, map, tap } from 'rxjs/operators';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+ import { Observable, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
 
 @Injectable()
-export class MovieEffect {
-  constructor(
-    private action$: Actions,
-    private ds: DataService,
-  ) {}
-  loadMovies = createEffect(() =>
-    this.action$.pipe(
-      ofType(getMovies),
-      exhaustMap(() =>
-        this.ds.getMovies().pipe(map((movies) => getMoviesSuccess(movies))),
-      ),
-    ),
-  );
-  addMovie = createEffect(() =>
-    this.action$.pipe(
-      ofType(addMovies),
-      tap(
-        (movie) => console.log(movie),
-        concatMap(({ movie }) =>
-          this.ds
-            .addMovies(movie)
-            .pipe(map((newMovie) => addMovieSuccess(newMovie))),
-        ),
-      ),
-    ),
-  );
+export class ErrorInterceptor implements HttpInterceptor{
+
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        return next.handle(req).pipe(
+            catchError((error: HttpErrorResponse) =>{
+                let em= 'something went wrong'
+                if(error.error instanceof ErrorEvent){
+                    em=`Client Error: ${error.error.message}`
+                }else{
+                    em= `Server Error : ${error.status} - ${error.message}`
+                }
+                console.log(em);
+                return throwError(()=> error)
+                
+            })
+        )
+    }
 }
